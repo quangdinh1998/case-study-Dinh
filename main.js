@@ -3,80 +3,52 @@ let list = document.getElementById('myUL');
 let completedList = document.getElementById('myUL-Done');
 let i;
 let count =0;
-
-let array = [];  
-let completedArray = []; 
+let TodoArray = [];  
+let completedTodoArray = []; 
+var today = new Date();
+var h = today.getHours();
+var m = today.getMinutes();
+var s = today.getSeconds();
+let prioNumber = 0; 
 function newElement() {
     let inputValue = document.getElementById('myInput').value;
     document.getElementById('myInput').value = "";
-    array[array.length] = inputValue;
-    list.innerHTML = "";
-    
-    for (i = 0; i< array.length ; i++) {
-        if (inputValue !== '') {
-            let liElement = document.createElement("li");
-            liElement.id = i;
-            display = array[i];
-            liElement.innerHTML =  '<div class="widget-content-right" id="'+i+'">'+display+' <button class="border-0 btn-transition btn btn-outline-success" id="done_btn'+i+'" > <i class="fa fa-check" id="done_btn'+i+'"></i></button> <button class="border-0 btn-transition btn btn-outline-danger" id="delete_btn'+i+'"> <span class="fa fa-trash" id="delete_btn'+i+'"></span> </button> </div>';
-            list.appendChild(liElement);
-            let deleteButton = document.getElementById('delete_btn' + i);
-            let doneButton = document.getElementById('done_btn' + i);
-            deleteButton.addEventListener("click",delete_btn);
-            doneButton.addEventListener("click",done_btn);
-            
-        }
-    }
+    TodoArray[TodoArray.length] = inputValue;
+    Refresh_Todo_List();
     saveToLocalStorage();
 }
 function delete_btn(event) {
-    list.innerHTML = "";
-    for( i = 0; i<array.length;i++) {
+    for( i = 0; i<TodoArray.length;i++) {
         
         if((event.target.id) === 'delete_btn' + i) {
-            let deleteElement = array[i];
-            let index = array.indexOf(deleteElement);
+            let deleteElement = TodoArray[i];
+            let index = TodoArray.indexOf(deleteElement);
             if (index !== -1) {
-                array.splice(index,1);
+                TodoArray.splice(index,1);
             }
             
         }
         
     }
     
-    for(i= 0 ; i <array.length; i++) {
-        if(array !== []) {
-            let liElement = document.createElement("li");
-            liElement.id = i;
-            display = array[i];
-            liElement.innerHTML =  '<div class="widget-content-right" id="div'+i+'">'+display+' <button class="border-0 btn-transition btn btn-outline-success" id="done_btn'+i+'" > <i class="fa fa-check" id="done_btn'+i+'"></i></button> <button class="border-0 btn-transition btn btn-outline-danger" id="delete_btn'+i+'"> <span class="fa fa-trash" id="delete_btn'+i+'"></span> </button> </div>';
-            list.appendChild(liElement);
-            let deleteButton = document.getElementById('delete_btn' + i);
-            let doneButton = document.getElementById('done_btn' + i);
-            deleteButton.addEventListener("click",delete_btn);
-            doneButton.addEventListener("click",done_btn);
-            
-        } else {
-            list.innerHTML = "";
-        }
-    }
+    Refresh_Todo_List();
     saveToLocalStorage();
     getFromLocalStorage();
     
 }
 function done_btn(event) {
     completedList.innerHTML='';
-    list.innerHTML = "";
-    for( i = 0; i<array.length;i++) {
+    for( i = 0; i<TodoArray.length;i++) {
         
         if((event.target.id) === 'done_btn' + i) {
-            let deleteElement = array[i];
-            completedArray[completedArray.length] = deleteElement;
-            let index = array.indexOf(deleteElement);
+            let deleteElement = TodoArray[i];
+            completedTodoArray[completedTodoArray.length] = deleteElement;
+            let index = TodoArray.indexOf(deleteElement);
             if (index !== -1) {
-                array.splice(index,1);
+                TodoArray.splice(index,1);
                 count++;
                 let liElement = document.createElement("li");
-                // liElement.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
+                liElement.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
                 completedList.appendChild(liElement);
             }
             
@@ -84,75 +56,87 @@ function done_btn(event) {
         }
         
     }
-    for(i= 0 ; i <array.length; i++) {
-        if(array !== []) {
-            let liElement = document.createElement("li");
-            liElement.id = i;
-            display = array[i];
-            liElement.innerHTML =  '<div class="widget-content-right" id="'+i+'">'+display+' <button class="border-0 btn-transition btn btn-outline-success" id="done_btn'+i+'" > <i class="fa fa-check" id="done_btn'+i+'"></i></button> <button class="border-0 btn-transition btn btn-outline-danger" id="delete_btn'+i+'"> <span class="fa fa-trash" id="delete_btn'+i+'"></span> </button> </div>';
-            list.appendChild(liElement);
-            let deleteButton = document.getElementById('delete_btn' + i);
-            let doneButton = document.getElementById('done_btn' + i);
-            deleteButton.addEventListener("click",delete_btn);
-            doneButton.addEventListener("click",done_btn);
-            
-        } else {
-            list.innerHTML = "";
-        }
-    }
+    Refresh_Todo_List();
     saveToLocalStorage();
     getFromLocalStorage();
 }
 
-function myFunction(event) {
-    
-    let key = event.which || event.keyCode;
-    if (key === 13) {
-        let inputValue = document.getElementById('myInput').value;
-        if(inputValue !== '') {
-            newElement();
-            saveToLocalStorage();
-            getFromLocalStorage();
-        }
-    }
-}
 
 function displayCompleted() {
     completedList.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
-    for (i = 0; i < completedArray.length; i++) {
+    for (i = 0; i < completedTodoArray.length; i++) {
         let liElement = document.createElement("li");
         liElement.id = 'completedTask' + i;
-        liElement.innerHTML = (i+1) + '. ' + completedArray[i];
+        liElement.innerHTML = (i+1) + '. ' + completedTodoArray[i];
         completedList.appendChild(liElement);
     }
 }
 
 
 function saveToLocalStorage() {
-    localStorage.setItem("TODO", JSON.stringify(array));
-    localStorage.setItem("COUNT",count) 
+    localStorage.setItem("TODO", JSON.stringify(TodoArray));
+    localStorage.setItem("COUNT",count);
+    localStorage.setItem("DONE", JSON.stringify(completedTodoArray));
 }
 
 function getFromLocalStorage() {
-    array = JSON.parse(localStorage.getItem("TODO"));
+    completedTodoArray = JSON.parse(localStorage.getItem("DONE"));
+    TodoArray = JSON.parse(localStorage.getItem("TODO"));
     count = localStorage.getItem("COUNT");
+    completedList.innerHTML='';
+    completedList.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
     displayCompleted();
+    Refresh_Todo_List();
+
+}
+
+
+function getTime() {
+        let date = new Date();
+        return date;
+}
+
+
+function Check_Discard_Button() {
+    let deleteButton = document.getElementById('delete_btn' + i);
+    let doneButton = document.getElementById('done_btn' + i);
+    deleteButton.addEventListener("click",delete_btn);
+    doneButton.addEventListener("click",done_btn);
+}
+
+function Refresh_Todo_List() {
     list.innerHTML = "";
-    
-    for(i= 0 ; i <array.length; i++) {
-        if(array !== []) {
+    for(i= 0 ; i <TodoArray.length; i++) {
+        if(TodoArray !== []) {
             let liElement = document.createElement("li");
             liElement.id = i;
-            display = array[i];
+            display = TodoArray[i];
             liElement.innerHTML =  '<div class="widget-content-right" id="div'+i+'">'+display+' <button class="border-0 btn-transition btn btn-outline-success" id="done_btn'+i+'" > <i class="fa fa-check" id="done_btn'+i+'"></i></button> <button class="border-0 btn-transition btn btn-outline-danger" id="delete_btn'+i+'"> <span class="fa fa-trash" id="delete_btn'+i+'"></span> </button> </div>';
             list.appendChild(liElement);
-            let deleteButton = document.getElementById('delete_btn' + i);
-            let doneButton = document.getElementById('done_btn' + i);
-            deleteButton.addEventListener("click",delete_btn);
-            doneButton.addEventListener("click",done_btn);
+            Check_Discard_Button();
             
         } else {
             list.innerHTML = "";
         }
     }
 }
+
+
+function resetAll() {
+    localStorage.clear();
+}
+
+window.addEventListener("keydown", function(e) {
+    let keyCode = e.keyCode;
+
+    const KEY_ENTER = 13, KEY_RESET = 46;
+
+    switch (keyCode) {
+        case KEY_ENTER: newElement(); break;
+        case KEY_RESET: resetAll(); break;
+    }
+});
+
+setInterval(function() {
+    document.getElementById("timeCheck").innerHTML = getTime();
+},1000);

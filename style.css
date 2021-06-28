@@ -102,3 +102,8 @@ input {
     animation-iteration-count: infinite
 }
 
+#timeCheck {
+    text-align: right;
+    background-color: #bed1c7;
+    font-size: xx-large;
+}
