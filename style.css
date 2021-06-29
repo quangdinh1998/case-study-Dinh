@@ -106,4 +106,5 @@ input {
     text-align: right;
     background-color: #bed1c7;
     font-size: xx-large;
+    writing-mode: horizontal-tb;
 }

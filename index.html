@@ -14,7 +14,7 @@
   <div id="myDIV" class="header mt-5">
     <h2 style="margin:5px">To-Do List</h2> <input type="text" id="myInput" placeholder="Task..."> <span onclick="newElement()" class="addBtn">Add</span>
 </div>
-<ul id="myUL"> </ul>
+<ul id="myUL"><li id="completedAudio"></li></ul>
 
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <div class="accordion-item">
@@ -28,9 +28,10 @@
     </div>
   </div>
 </div>
-
+<div id="audioDiv" ></div>
 <script src="main.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </body>
 </html>
+<!-- <audio hidden controls autoplay> <source src="completed.mp3" type="audio/mp3"> </audio> -->

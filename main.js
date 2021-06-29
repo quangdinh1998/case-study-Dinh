@@ -5,11 +5,7 @@ let i;
 let count =0;
 let TodoArray = [];  
 let completedTodoArray = []; 
-var today = new Date();
-var h = today.getHours();
-var m = today.getMinutes();
-var s = today.getSeconds();
-let prioNumber = 0; 
+let prioNumber = 0;
 function newElement() {
     let inputValue = document.getElementById('myInput').value;
     document.getElementById('myInput').value = "";
@@ -46,12 +42,13 @@ function done_btn(event) {
             let index = TodoArray.indexOf(deleteElement);
             if (index !== -1) {
                 TodoArray.splice(index,1);
+                let audioDiv = document.getElementById("audioDiv");
+                audioDiv.innerHTML='<audio hidden controls autoplay> <source src="completed.mp3" type="audio/mp3"> </audio>';
                 count++;
                 let liElement = document.createElement("li");
                 liElement.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
                 completedList.appendChild(liElement);
-            }
-            
+            }       
 
         }
         
@@ -59,6 +56,7 @@ function done_btn(event) {
     Refresh_Todo_List();
     saveToLocalStorage();
     getFromLocalStorage();
+
 }
 
 
@@ -105,7 +103,7 @@ function Check_Discard_Button() {
 }
 
 function Refresh_Todo_List() {
-    list.innerHTML = "";
+    list.innerHTML = '';
     for(i= 0 ; i <TodoArray.length; i++) {
         if(TodoArray !== []) {
             let liElement = document.createElement("li");
@@ -116,20 +114,23 @@ function Refresh_Todo_List() {
             Check_Discard_Button();
             
         } else {
-            list.innerHTML = "";
+
+            list.innerHTML = '';
         }
     }
 }
 
-
 function resetAll() {
-    localStorage.clear();
+    TodoArray = [];
+    completedTodoArray = [];
+    count = 0;
+    saveToLocalStorage();
 }
 
 window.addEventListener("keydown", function(e) {
     let keyCode = e.keyCode;
 
-    const KEY_ENTER = 13, KEY_RESET = 46;
+    const KEY_ENTER = 13; KEY_RESET = 46;
 
     switch (keyCode) {
         case KEY_ENTER: newElement(); break;
@@ -140,3 +141,8 @@ window.addEventListener("keydown", function(e) {
 setInterval(function() {
     document.getElementById("timeCheck").innerHTML = getTime();
 },1000);
+
+
+//Drag and Drop prio
+// Undo
+// hiệu suất
