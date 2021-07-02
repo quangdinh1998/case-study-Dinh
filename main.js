@@ -5,21 +5,25 @@ let i;
 let count =0;
 let TodoArray = [];  
 let completedTodoArray = []; 
-let prioNumber = 0;
+let oldCount = 0;
+let oldTodoArray = [];
+let oldCompletedTodoArray = [];
 function newElement() {
     let inputValue = document.getElementById('myInput').value;
     document.getElementById('myInput').value = "";
-    TodoArray[TodoArray.length] = inputValue;
-    Refresh_Todo_List();
-    saveToLocalStorage();
+    if(inputValue !== '') {
+        TodoArray[TodoArray.length] = inputValue;
+        Refresh_Todo_List();
+        saveToLocalStorage();
+    }
 }
 function delete_btn(event) {
     for( i = 0; i<TodoArray.length;i++) {
-        
         if((event.target.id) === 'delete_btn' + i) {
             let deleteElement = TodoArray[i];
             let index = TodoArray.indexOf(deleteElement);
             if (index !== -1) {
+                oldTodoArray = TodoArray;
                 TodoArray.splice(index,1);
             }
             
@@ -35,15 +39,16 @@ function delete_btn(event) {
 function done_btn(event) {
     completedList.innerHTML='';
     for( i = 0; i<TodoArray.length;i++) {
-        
         if((event.target.id) === 'done_btn' + i) {
             let deleteElement = TodoArray[i];
             completedTodoArray[completedTodoArray.length] = deleteElement;
             let index = TodoArray.indexOf(deleteElement);
             if (index !== -1) {
+                oldTodoArray = TodoArray;
                 TodoArray.splice(index,1);
                 let audioDiv = document.getElementById("audioDiv");
                 audioDiv.innerHTML='<audio hidden controls autoplay> <source src="completed.mp3" type="audio/mp3"> </audio>';
+                oldCount = count;
                 count++;
                 let liElement = document.createElement("li");
                 liElement.innerHTML = 'Bạn đã hoàn thành được ' + count + ' nhiệm vụ trong ngày hôm nay!';
@@ -103,6 +108,8 @@ function Check_Discard_Button() {
 }
 
 function Refresh_Todo_List() {
+    oldCompletedTodoArray = completedTodoArray;
+    console.log(oldCompletedTodoArray);
     list.innerHTML = '';
     for(i= 0 ; i <TodoArray.length; i++) {
         if(TodoArray !== []) {
@@ -120,6 +127,16 @@ function Refresh_Todo_List() {
     }
 }
 
+function undoTask() {
+    // count = oldCount;
+    // TodoArray = oldTodoArray;
+    // completedTodoArray = oldCompletedTodoArray;
+    // displayCompleted()
+    // Refresh_Todo_List();
+    // saveToLocalStorage();
+    // getFromLocalStorage();
+}
+
 function resetAll() {
     TodoArray = [];
     completedTodoArray = [];
@@ -127,14 +144,17 @@ function resetAll() {
     saveToLocalStorage();
 }
 
+
 window.addEventListener("keydown", function(e) {
     let keyCode = e.keyCode;
 
-    const KEY_ENTER = 13; KEY_RESET = 46;
+    const KEY_ENTER = 13; KEY_RESET = 46; 
 
     switch (keyCode) {
         case KEY_ENTER: newElement(); break;
         case KEY_RESET: resetAll(); break;
+        // case KEY_UNDO: undoTask(); break;
+
     }
 });
 
@@ -143,6 +163,6 @@ setInterval(function() {
 },1000);
 
 
-//Drag and Drop prio
+//Drag and Drop
 // Undo
 // hiệu suất
